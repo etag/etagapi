@@ -7,7 +7,8 @@ from rest_framework.renderers import BrowsableAPIRenderer, JSONPRenderer,JSONRen
 from filters import ReadersFilter
 from etag.models import Readers
 from serializer import ReaderSerializer
-
+from rest_framework import permissions 
+#import DjangoModelPermissionsOrAnonReadOnly
 
 class ReadersViewSet(viewsets.ModelViewSet):
     """
@@ -15,6 +16,7 @@ class ReadersViewSet(viewsets.ModelViewSet):
     """
     model = Readers
     queryset = Readers.objects.all()
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = ReaderSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
