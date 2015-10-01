@@ -43,7 +43,8 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-        'catalog.permission.DjangoMongoPermissionsOrAnonReadOnly'
+        'catalog.permission.DjangoMongoPermissionsOrAnonReadOnly',
+        #'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
@@ -84,7 +85,8 @@ INSTALLED_APPS = (
     'rest_framework.authtoken',
     'queue',
     'catalog',
-    'data_store'
+    'data_store',
+    'etag'
 
 )
 
@@ -106,13 +108,29 @@ WSGI_APPLICATION = 'api.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
+#etag_auth
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'etag_auth',
+        #'USER': 'mydatabaseuser',
+        #'PASSWORD': 'mypassword',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+        #'ENGINE': 'django.db.backends.sqlite3',
+        #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    },
+    'etag': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'etag',
+        #'USER': 'mydatabaseuser',
+        #'PASSWORD': 'mypassword',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
+
+DATABASE_ROUTERS = ['api.etag_router.EtagRouter',]
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
