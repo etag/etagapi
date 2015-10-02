@@ -30,8 +30,15 @@ class APIRoot(APIView):
         return Response({
             'Queue': {'Tasks': reverse('queue-main', request=request),
                       'Tasks History': reverse('queue-user-tasks',request=request)},
-            'Catalog': {'Data Source':reverse('catalog-list',request=request)},
-            'Data Store': {'Mongo':reverse('data-list',request=request)},
+            'Data Store': {'ETAG Postgresql':{'Readers':reverse('reader-list',request=request),
+                                              'Location':reverse('location-list',request=request),
+                                              'Tags':reverse('tags-list',request=request),
+                                              'Tag Read':reverse('tag_reads-list',request=request),
+                                              'Animal':reverse('animal-list',request=request),
+                                              'Accessory Data':reverse('accessory-list',request=request),
+                                             },
+                            'Mongo':reverse('data-list',request=request)
+                         },
             'User Profile': {'User':reverse('user-list',request=request)}
         })
 
@@ -51,8 +58,8 @@ class UserProfile(LoginRequiredMixin,APIView):
         serializer = self.serializer_class(data,context={'request':request})
         tok = Token.objects.get_or_create(user=self.request.user)
         rdata = serializer.data
-        rdata['name'] = data.get_full_name() 
-        rdata['gravator_url']="http://www.gravatar.com/avatar/%s" % (md5(rdata['email'].strip(' \t\n\r')).hexdigest()) 
+        rdata['name'] = data.get_full_name()
+        rdata['gravator_url']="http://www.gravatar.com/avatar/%s" % (md5(rdata['email'].strip(' \t\n\r')).hexdigest())
         rdata['auth-token']= str(tok[0])
         return Response(rdata)
     def post(self,request,format=None):
@@ -64,7 +71,7 @@ class UserProfile(LoginRequiredMixin,APIView):
             return Response(data)
         auth_tok  = request.DATA.get('auth-token', None)
         if str(auth_tok).lower()=="update":
-            tok = Token.objects.get(user=user)    
+            tok = Token.objects.get(user=user)
             tok.delete()
             tok = Token.objects.get_or_create(user=self.request.user)
             data = {"auth-token":str(tok[0])}
