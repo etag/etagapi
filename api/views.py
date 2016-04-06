@@ -30,12 +30,12 @@ class APIRoot(APIView):
         return Response({
             'Queue': {'Tasks': reverse('queue-main', request=request),
                       'Tasks History': reverse('queue-user-tasks',request=request)},
-            'Data Store': {'ETAG Postgresql':{'Readers':reverse('reader-list',request=request),
-                                              'Location':reverse('location-list',request=request),
+            'Data Store': {'ETAG Postgresql':{'Readers':reverse('readers-list',request=request),
+                                              'Reader Location':reverse('readerlocation-list',request=request),
                                               'Tags':reverse('tags-list',request=request),
-                                              'Tag Read':reverse('tag_reads-list',request=request),
-                                              'Animal':reverse('animal-list',request=request),
-                                              'Accessory Data':reverse('accessory-list',request=request),
+                                              'Tag Read':reverse('tagreads-list',request=request),
+                                              'Tag Animal':reverse('taganimal-list',request=request),
+                                              'Accessory Data':reverse('accessorydata-list',request=request),
                                              },
                             'Mongo':reverse('data-list',request=request)
                          },
