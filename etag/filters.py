@@ -11,30 +11,34 @@ class ReadersFilter(django_filters.FilterSet):
         model = Readers
         fields = ['name', 'description',]
 
+
 class ReaderLocationFilter(django_filters.FilterSet):
-    name = django_filters.CharFilter(lookup_type='icontains')
+    reader = django_filters.CharFilter(name='reader__reader_id' ,lookup_type='icontains')
     min_lat = django_filters.NumberFilter(name='latitude',lookup_type='gte')
     max_lat = django_filters.NumberFilter(name='latitude',lookup_type='lte')
     min_long = django_filters.NumberFilter(name='longitude',lookup_type='gte')
     max_long = django_filters.NumberFilter(name='longitude',lookup_type='lte')
-    min_date = django_filters.DateFilter(name='start_date', lookup_type='gte')
-    max_date = django_filters.DateFilter(name='end_date', lookup_type='lte')
+    min_start_timestamp = django_filters.DateTimeFilter(name='start_timestamp', lookup_type='gte')
+    max_start_timestamp = django_filters.DateTimeFilter(name='start_timestamp', lookup_type='lte')
+    min_end_timestamp = django_filters.DateTimeFilter(name='end_timestamp', lookup_type='gte')
+    max_end_timestamp = django_filters.DateTimeFilter(name='end_timestamp', lookup_type='lte')
     class Meta:
         model = ReaderLocation
-        fields = ['name', 'latitude','longitude','start_date','end_date']
+        fields = ['reader', 'latitude','longitude','start_timestamp','end_timestamp']
 
 class TagsFilter(django_filters.FilterSet):
     tag_id = django_filters.CharFilter(lookup_type='icontains')
-    min_date = django_filters.DateFilter(name='start_date', lookup_type='gte')
-    max_date = django_filters.DateFilter(name='end_date', lookup_type='lte')
+    name = django_filters.CharFilter(lookup_type='icontains')
+    description = django_filters.CharFilter(lookup_type='icontains')
     class Meta:
         model = Tags
-        fields = ['name', 'latitude','longitude','start_date','end_date']
+        fields = ['tag_id', 'name','description']
 
 class TagReadsFilter(django_filters.FilterSet):
-    tag_id = django_filters.CharFilter(lookup_type='icontains')
-    min_timestamp = django_filters.DateFilter(name='timestamp', lookup_type='gte')
-    max_timestamp = django_filters.DateFilter(name='timestamp', lookup_type='lte')
+    reader = django_filters.CharFilter(name='reader__reader_id' ,lookup_type='icontains')
+    tag = django_filters.CharFilter(name='tag__tag_id' ,lookup_type='icontains')
+    min_timestamp = django_filters.DateTimeFilter(name='tag_timestamp', lookup_type='gte')
+    max_timestamp = django_filters.DateTimeFilter(name='tag_timestamp', lookup_type='lte')
     class Meta:
         model = TagReads
-        fields = ['tag_id',]
+        fields = ['tag','reader']

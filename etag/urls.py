@@ -8,10 +8,10 @@ from etag.views import AccessoryDataViewSet, AnimalViewSet
 
 router = routers.SimpleRouter()
 router.register('readers', ReadersViewSet)
-router.register('location', ReaderLocationViewSet)
+router.register('reader_location', ReaderLocationViewSet)
 router.register('tags', TagsViewSet)
 router.register('tag_reads', TagReadsViewSet)
-router.register('animal', AnimalViewSet)
+router.register('tag_animal', AnimalViewSet)
 router.register('accessory', AccessoryDataViewSet)
 #router.register('lusource', LuSourceViewSet)
 

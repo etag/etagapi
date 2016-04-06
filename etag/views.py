@@ -4,9 +4,9 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.renderers import BrowsableAPIRenderer, JSONPRenderer,JSONRenderer,XMLRenderer,YAMLRenderer #, filters
 #from renderer import CustomBrowsableAPIRenderer
-from filters import ReadersFilter,ReaderLocationFilter, TagReadsFilter
-from etag.models import Readers, Animal, ReaderLocation,Tags,TagReads,AccessoryData
-from serializer import ReaderSerializer, AnimalSerializer
+from filters import ReadersFilter,ReaderLocationFilter, TagReadsFilter,TagsFilter
+from etag.models import Readers, TagAnimal, ReaderLocation,Tags,TagReads,AccessoryData
+from serializer import ReaderSerializer, AnimalSerializer,ReaderLocationSerializer,TagsSerializer,TagReadsSerializer
 from rest_framework import permissions
 #import DjangoModelPermissionsOrAnonReadOnly
 
@@ -22,6 +22,7 @@ class ReadersViewSet(viewsets.ModelViewSet):
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
     filter_class = ReadersFilter
     search_fields = ('name', 'description',)
+    ordering_fields =  '__all__'
     #ordering_fields = ('name', 'description', 'latitude', 'longitude', 'source_no','source__cource')
 
 class ReaderLocationViewSet(viewsets.ModelViewSet):
@@ -35,15 +36,15 @@ class ReaderLocationViewSet(viewsets.ModelViewSet):
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
     filter_class = ReaderLocationFilter
-    search_fields = ('name', 'latitude','longitude','start_date','end_date')
+    search_fields = ('name', 'latitude','longitude','start_timestamp','end_timestamp')
     #ordering_fields = ('name', 'description', 'latitude', 'longitude', 'source_no','source__cource')
 
 class AnimalViewSet(viewsets.ModelViewSet):
     """
     Animal table view set.
     """
-    model = Animal
-    queryset = Animal.objects.all()
+    model = TagAnimal
+    queryset = TagAnimal.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = AnimalSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
@@ -74,10 +75,10 @@ class TagReadsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TagReadsSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
-    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter)
     filter_class = TagReadsFilter
     search_fields = ('tag_id',)
-    #ordering_fields = ('name', 'description', 'latitude', 'longitude', 'source_no','source__cource')
+    ordering_fields =  '__all__' 
 class AccessoryDataViewSet(viewsets.ModelViewSet):
     """
     AccessoryData table view set.
@@ -86,4 +87,4 @@ class AccessoryDataViewSet(viewsets.ModelViewSet):
     queryset = AccessoryData.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
-    search_fields = ('timestamp','accessory_type','value')
+    search_fields = ('accessory_type','value')
