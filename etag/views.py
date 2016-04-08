@@ -4,11 +4,12 @@ from django.shortcuts import render
 from rest_framework import viewsets, filters
 from rest_framework.renderers import BrowsableAPIRenderer, JSONPRenderer,JSONRenderer,XMLRenderer,YAMLRenderer #, filters
 #from renderer import CustomBrowsableAPIRenderer
-from filters import ReadersFilter,ReaderLocationFilter, TagReadsFilter,TagsFilter
+from filters import ReadersFilter,ReaderLocationFilter, TagReadsFilter,TagsFilter, AnimalFilter
 from etag.models import Readers, TagAnimal, ReaderLocation,Tags,TagReads,AccessoryData
 from serializer import ReaderSerializer, AnimalSerializer,ReaderLocationSerializer,TagsSerializer,TagReadsSerializer
 from rest_framework import permissions
 #import DjangoModelPermissionsOrAnonReadOnly
+
 
 class ReadersViewSet(viewsets.ModelViewSet):
     """
@@ -19,12 +20,13 @@ class ReadersViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = ReaderSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
-    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,filters.OrderingFilter)
     filter_class = ReadersFilter
     search_fields = ('name', 'description',)
     ordering_fields =  '__all__'
-    #ordering_fields = ('name', 'description', 'latitude', 'longitude', 'source_no','source__cource')
+    ordering_fields = '__all__'
 
+	
 class ReaderLocationViewSet(viewsets.ModelViewSet):
     """
     Reader Location table view set.
@@ -34,11 +36,12 @@ class ReaderLocationViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = ReaderLocationSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
-    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,filters.OrderingFilter)
     filter_class = ReaderLocationFilter
     search_fields = ('name', 'latitude','longitude','start_timestamp','end_timestamp')
-    #ordering_fields = ('name', 'description', 'latitude', 'longitude', 'source_no','source__cource')
+    ordering_fields = '__all__'
 
+	
 class AnimalViewSet(viewsets.ModelViewSet):
     """
     Animal table view set.
@@ -48,11 +51,11 @@ class AnimalViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = AnimalSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
-    #filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
-    #filter_class = ReadersFilter
-    search_fields = ('field_data',)
-    #ordering_fields = ('name', 'description', 'latitude', 'longitude', 'source_no','source__cource')
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,filters.OrderingFilter)
+    filter_class = AnimalFilter
+    ordering_fields = ('name', 'description', 'end_timestamp', 'start_timestamp')
 
+	
 class TagsViewSet(viewsets.ModelViewSet):
     """
     Tags table view set.
@@ -62,10 +65,12 @@ class TagsViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TagsSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
-    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter) #,filters.OrderingFilter)
+    filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter ,filters.OrderingFilter)
     filter_class = TagsFilter
     search_fields = ('tag_id',)
-    #ordering_fields = ('name', 'description', 'latitude', 'longitude', 'source_no','source__cource')
+    ordering_fields = '__all__'
+	
+	
 class TagReadsViewSet(viewsets.ModelViewSet):
     """
     TagReads table view set.
@@ -79,6 +84,8 @@ class TagReadsViewSet(viewsets.ModelViewSet):
     filter_class = TagReadsFilter
     search_fields = ('tag_id',)
     ordering_fields =  '__all__' 
+	
+	
 class AccessoryDataViewSet(viewsets.ModelViewSet):
     """
     AccessoryData table view set.
