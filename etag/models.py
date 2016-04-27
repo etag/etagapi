@@ -71,6 +71,7 @@ class Tags(models.Model):
     tag_id = models.CharField(primary_key=True, max_length=10)
     name = models.CharField(max_length=255, blank=True)
     description = models.CharField(max_length=500, blank=True)
+    user_id = models.IntegerField(blank=True, null=True)
     class Meta:
         managed = False
         db_table = 'tags'

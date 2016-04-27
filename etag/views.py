@@ -16,7 +16,6 @@ class ReadersViewSet(viewsets.ModelViewSet):
     RFID Readers table view set.
     """
     model = Readers
-    queryset = Readers.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = ReaderSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
@@ -25,7 +24,12 @@ class ReadersViewSet(viewsets.ModelViewSet):
     search_fields = ('name', 'description',)
     ordering_fields =  '__all__'
     ordering_fields = '__all__'
-
+    
+    def get_queryset(self):
+        user = self.request.user
+        if not user:
+            return []	
+        return Readers.objects.filter(user_id=user.id)
 	
 class ReaderLocationViewSet(viewsets.ModelViewSet):
     """
@@ -61,7 +65,6 @@ class TagsViewSet(viewsets.ModelViewSet):
     Tags table view set.
     """
     model = Tags
-    queryset = Tags.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TagsSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
@@ -70,13 +73,17 @@ class TagsViewSet(viewsets.ModelViewSet):
     search_fields = ('tag_id',)
     ordering_fields = '__all__'
 	
+    def get_queryset(self):
+        user = self.request.user
+        if not user:
+            return []
+        return Tags.objects.filter(user_id=user.id)
 	
 class TagReadsViewSet(viewsets.ModelViewSet):
     """
     TagReads table view set.
     """
     model = TagReads
-    queryset = TagReads.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TagReadsSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
@@ -85,13 +92,27 @@ class TagReadsViewSet(viewsets.ModelViewSet):
     search_fields = ('tag_id',)
     ordering_fields =  '__all__' 
 	
+    def get_queryset(self):
+        user = self.request.user
+        if not user:
+            return []
+        
+    #    queryset = []
+    #    for read in TagReads.objects.all():
+    #        reltags = Tags.objects.filter(tag_id=read.tag)
+    #        if len(reltags) != 1:
+    #            continue
+    #        elif read.user_id == reltags[0].user_id:
+    #           queryset.append(read)
+    #    return queryset      
+        return TagReads.objects.filter(tag__user_id = user.id)
 	
 class AccessoryDataViewSet(viewsets.ModelViewSet):
     """
     AccessoryData table view set.
     """
-    model =AccessoryData
+    model=AccessoryData
     queryset = AccessoryData.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
-    renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
-    search_fields = ('accessory_type','value')
+    renderer_classes = (BrowsableAPIRenderer, JSONRenderer, JSONPRenderer, XMLRenderer, YAMLRenderer)
+    search_fields = ('accessory_type', 'value')

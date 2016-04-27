@@ -50,7 +50,8 @@ class TagReadsFilter(django_filters.FilterSet):
     class Meta:
         model = TagReads
         fields = ['tag','reader']
-        
+       
+
 class AnimalFilter(django_filters.FilterSet):
     tag = django_filters.CharFilter(name='tag__tag_id' ,lookup_type='icontains')
     name = django_filters.CharFilter(name='name',lookup_type='icontains')
