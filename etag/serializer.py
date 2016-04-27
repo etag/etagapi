@@ -52,6 +52,7 @@ class AnimalSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url','tag','name','description','start_timestamp','end_timestamp','field_data',)
     #def create(self, validated_data):
      #   return Roosts.objects.using('purple').create(**validated_data)
+	 
 class TagsSerializer(serializers.HyperlinkedModelSerializer):
     #tag_animals = AnimalSerializer() 
     class Meta:

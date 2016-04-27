@@ -1,13 +1,15 @@
 from django.shortcuts import render
 #from django.shortcuts import render
 # Create your views here.
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
 from rest_framework.renderers import BrowsableAPIRenderer, JSONPRenderer,JSONRenderer,XMLRenderer,YAMLRenderer #, filters
+from rest_framework.parsers import JSONParser
 #from renderer import CustomBrowsableAPIRenderer
 from filters import ReadersFilter,ReaderLocationFilter, TagReadsFilter,TagsFilter, AnimalFilter
 from etag.models import Readers, TagAnimal, ReaderLocation,Tags,TagReads,AccessoryData
 from serializer import ReaderSerializer, AnimalSerializer,ReaderLocationSerializer,TagsSerializer,TagReadsSerializer
 from rest_framework import permissions
+from rest_framework.response import Response
 #import DjangoModelPermissionsOrAnonReadOnly
 
 
@@ -30,7 +32,18 @@ class ReadersViewSet(viewsets.ModelViewSet):
         if not user:
             return []	
         return Readers.objects.filter(user_id=user.id)
-	
+
+    def create(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+
+        if serializer.is_valid():
+            reader = Readers.objects.create(reader_id=serializer.data['reader_id'],name=serializer.data['name'],description=serializer.data['description'])
+            reader.user_id = self.request.user.id
+            reader.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ReaderLocationViewSet(viewsets.ModelViewSet):
     """
     Reader Location table view set.
@@ -78,6 +91,16 @@ class TagsViewSet(viewsets.ModelViewSet):
         if not user:
             return []
         return Tags.objects.filter(user_id=user.id)
+		
+    def create(self, request):
+        serializer = self.serializer_class(data=request.DATA)
+
+        if serializer.is_valid():
+            reader = Tags.objects.create(tag_id=serializer.data['tag_id'],name=serializer.data['name'],description=serializer.data['description'])
+            reader.user_id = self.request.user.id
+            reader.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 	
 class TagReadsViewSet(viewsets.ModelViewSet):
     """
