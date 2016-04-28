@@ -20,7 +20,7 @@ class ReaderSerializer(serializers.HyperlinkedModelSerializer):
     reader_location = serializers.SerializerMethodField('make_url')
     class Meta:
         model = Readers
-        fields = ('url','reader_id','name', 'description','user_id')
+        fields = ('url','reader_id','name', 'description')#'user_id')
 
     def make_url(self, obj):
         """
@@ -57,7 +57,7 @@ class TagsSerializer(serializers.HyperlinkedModelSerializer):
     #tag_animals = AnimalSerializer() 
     class Meta:
         model = Tags
-        fields = ('url','tag_id','user_id','name', 'description',)
+        fields = ('url','tag_id','name', 'description')#'user_id')
     #def create(self, validated_data):
      #   return Roosts.objects.using('purple').create(**validated_data)
 
