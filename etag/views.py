@@ -57,6 +57,13 @@ class ReaderLocationViewSet(viewsets.ModelViewSet):
     filter_class = ReaderLocationFilter
     search_fields = ('name', 'latitude','longitude','start_timestamp','end_timestamp')
     ordering_fields = '__all__'
+	
+    def get_queryset(self):
+        user = self.request.user
+        if not user:
+            return []
+             
+        return ReaderLocation.objects.filter(reader__user_id = user.id)
 
 	
 class AnimalViewSet(viewsets.ModelViewSet):
@@ -64,13 +71,19 @@ class AnimalViewSet(viewsets.ModelViewSet):
     Animal table view set.
     """
     model = TagAnimal
-    queryset = TagAnimal.objects.all()
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = AnimalSerializer
     renderer_classes = (BrowsableAPIRenderer, JSONRenderer,JSONPRenderer,XMLRenderer,YAMLRenderer)
     filter_backends = (filters.DjangoFilterBackend, filters.SearchFilter,filters.OrderingFilter)
     filter_class = AnimalFilter
     ordering_fields = ('name', 'description', 'end_timestamp', 'start_timestamp')
+	
+    def get_queryset(self):
+        user = self.request.user
+        if not user:
+            return []
+             
+        return TagAnimal.objects.filter(tag__user_id = user.id)
 
 	
 class TagsViewSet(viewsets.ModelViewSet):
@@ -119,15 +132,7 @@ class TagReadsViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if not user:
             return []
-        
-    #    queryset = []
-    #    for read in TagReads.objects.all():
-    #        reltags = Tags.objects.filter(tag_id=read.tag)
-    #        if len(reltags) != 1:
-    #            continue
-    #        elif read.user_id == reltags[0].user_id:
-    #           queryset.append(read)
-    #    return queryset      
+             
         return TagReads.objects.filter(tag__user_id = user.id)
 	
 class AccessoryDataViewSet(viewsets.ModelViewSet):
