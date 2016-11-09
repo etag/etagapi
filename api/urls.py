@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth.models import Permission
-from api.views import APIRoot, UserProfile #, UserView
+from api.views import APIRoot, UserProfile ,FileUploadView #, UserView
 #from rest_framework import routers
 
 try:
@@ -19,12 +19,13 @@ urlpatterns = patterns('',
     # Django Rest Login Urls
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # Queue Application
-    url(r'^etag/', include('etag.urls')),
-    url(r'^queue/', include('queue.urls')),
+    url(r'^queue/', include('cybercom_queue.urls')),
     url(r'^data_store/',include('data_store.urls')),
     url(r'^catalog/', include('catalog.urls')),
+    url(r'^etag/', include('etag.urls')),		
     # Admin Urls
     url(r'^admin/', include(admin.site.urls)),
+    url(r'file-upload/', FileUploadView.as_view(), name='file-upload'),
     # Main Project View - Customize depending on what Apps are enabled
     url(r'^$', APIRoot.as_view()),
     url(r'^/\.(?P<format>(api|json|jsonp|xml|yaml))/$', APIRoot.as_view()),
